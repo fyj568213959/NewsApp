@@ -9,14 +9,14 @@
     tools:context=".main.widget.MainActivity">
 
     <include
-        android:id="@+id/abc"
+        android:id="@+id/appbar"
         layout="@layout/layout_toolbar"/>
 
     <FrameLayout
         android:id="@+id/frame_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/abc"
+        android:layout_below="@+id/appbar"
         android:elevation="5dp"
         android:scrollbars="none"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
