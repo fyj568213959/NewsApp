@@ -1,5 +1,6 @@
 package com.fengyj.newsapp.main.widget;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.design.widget.NavigationView;
@@ -12,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MenuItem;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.fengyj.newsapp.R;
@@ -58,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
         setupDrawerContent(mNavigationView);
 
         mMainPresenter = new MainPresenterImpl(this);
-
+        setWindowTranslucentStatus();
         switchTitle(Configs.NEWS_POSITION);
         initFragments();
     }
@@ -73,6 +75,20 @@ public class MainActivity extends AppCompatActivity implements MainView {
                 return true;
             }
         });
+    }
+
+    private void setWindowTranslucentStatus() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            WindowManager.LayoutParams localLayoutParams = getWindow().getAttributes();
+            localLayoutParams.flags = (WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS | localLayoutParams.flags);
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                //将侧边栏顶部延伸至status bar
+                mDrawerLayout.setFitsSystemWindows(true);
+                //将主页面顶部延伸至status bar;虽默认为false,但经测试,DrawerLayout需显示设置
+                mDrawerLayout.setClipToPadding(false);
+            }
+        }
+
     }
 
 
@@ -93,6 +109,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
 
     /**
      * 切换Fragment
+     *
      * @param position
      */
     @Override
@@ -119,10 +136,11 @@ public class MainActivity extends AppCompatActivity implements MainView {
 
     /**
      * 切换title
+     *
      * @param position
      */
-    private void switchTitle(int position){
-        switch (position){
+    private void switchTitle(int position) {
+        switch (position) {
             case Configs.NEWS_POSITION:
                 mToolbar.setTitle(R.string.navigation_news);
                 break;
@@ -141,9 +159,9 @@ public class MainActivity extends AppCompatActivity implements MainView {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
-            if(mDrawerLayout.isDrawerOpen(Gravity.LEFT)){
+            if (mDrawerLayout.isDrawerOpen(Gravity.LEFT)) {
                 mDrawerLayout.closeDrawers();
-            }else{
+            } else {
                 if (System.currentTimeMillis() - preTime > 2000) {
                     ToastUtil.show(this, "再按一次退出");
                     preTime = System.currentTimeMillis();
